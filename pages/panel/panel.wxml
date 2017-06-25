@@ -1,0 +1,9 @@
+<!--panel.wxml-->
+<view class="flex_column">
+  <canvas canvas-id="chess" class="canvas_style" bindtap="chess_tap" 
+    />
+
+  <button bindtap="oneMoreGame">再来一局</button>
+  <button>人机对战</button>
+  <button>两人对战</button>
+</view>
