@@ -1,12 +1,7 @@
 /* panel.wxss */
-.flex_column{
-  /*background: #cac9bb;*/
-}
-
 .canvas_style{
   width: 100%;
   height: 800rpx;
-  margin: 200rpx auto 100rpx;
+  margin: 100rpx auto 60rpx;
   background: #d6b39d;
-  
 }

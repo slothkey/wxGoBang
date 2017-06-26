@@ -4,6 +4,6 @@
     />
 
   <button bindtap="oneMoreGame">再来一局</button>
-  <button>人机对战</button>
-  <button>两人对战</button>
+  <button bindtap="toMMachine" wx:if="{{!man_machine}}">人机对战</button>
+  <button bindtap="toMMan" wx:if="{{man_machine}}">两人对战</button>
 </view>

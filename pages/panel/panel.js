@@ -1,8 +1,7 @@
-// panel.js
 // 关于画棋盘、棋子的
 var context 
 var screenWidth = 0
-var chessBoards = []  //  1 白方（我方） 2 黑方（计算机）
+var chessBoards = []  //  1 白方（我方） 2 黑方（计算机或者是另一方）
 var width = 0
 var space = 0
 var left = 0
@@ -16,15 +15,18 @@ var count = 0
 var over = false
 
 
+// var man_machine = true;
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-  
+    man_machine: true  // 判断是人机、人人
   },
 
+  // 再来一局（把界面各种参数都清楚掉）
   oneMoreGame: function(e){
     me = true
     myWin = []
@@ -40,6 +42,50 @@ Page({
       }
     }
     this.drawChess(true)
+  },
+
+  // 切换成:人机 
+  toMMachine: function(e){
+    var that = this
+    wx.showModal({
+      title: '',
+      content: '确定要放弃当前进度，并切换成人机模式吗？',
+      cancelText: '取消',
+      confirmText: '确定',
+      success: function(res){
+        if(res.confirm){
+          // 确定
+          that.setData({
+            man_machine: !that.data.man_machine
+          })
+          that.oneMoreGame()
+        }else {
+          // 取消
+        }
+      }
+    })
+  },
+
+  // 切换成：人人
+  toMMan: function(e){
+    var that = this
+    wx.showModal({
+      title: '',
+      content: '确定要放弃当前进度，并切换成人人模式吗？',
+      cancelText: '取消',
+      confirmText: '确定',
+      success: function (res) {
+        if (res.confirm) {
+          // 确定
+          that.setData({
+            man_machine: !that.data.man_machine
+          })
+          that.oneMoreGame()
+        } else {
+          // 取消
+        }
+      }
+    })
   },
 
   /**
@@ -115,6 +161,7 @@ Page({
 
   },
   
+  // 画棋盘
   drawChess: function(first){
     context = wx.createCanvasContext('chess')
 
@@ -138,24 +185,30 @@ Page({
     }
   },
 
-  // 真人 下棋
+  // 
+  getMode: function(){
+    return this.data.man_machine
+  },
+
+  // 用户点击棋盘：真人 下棋
   chess_tap: function(e){
-    if(!me || over){ // 说明现在该计算机下棋了或者比赛已经结束，点击无效
+    if (over || (!me && this.getMode() )){ // 说明现在该计算机下棋了或者比赛已经结束，点击无效
       return
     }
     
     // positionToXY
     var x = e.detail.x
-    var y = e.detail.y - 100
+    var y = e.detail.y - 50
     var i = Math.floor((x - left + space / 2) / space) 
     var j = Math.floor((y - top + space / 2) / space) 
     
     if(chessBoards[i][j] != 0){ // 如果这个位置已经有棋子了，返回
       return
     }
-    chessBoards[i][j] = 1
+    chessBoards[i][j] = me ? 1 : 2;
     this.drawPiece() 
-    // 判断白棋是否赢了
+    if(this.getMode()){
+      // 人机下棋，判断下棋方是否赢了
       for (var k = 0; k < count; k++) {
         if (wins[i][j][k]) {
           myWin[k]++
@@ -170,8 +223,30 @@ Page({
           }
         }
       }
+    }else{
+      // 人人下棋，判断某一方是否赢了
+      var winArray = me ? myWin : computerWin;  // 即使是computerWin，其实是另一方
+      var anotherWin = me ? computerWin : myWin;
+      for(var k = 0; k < count; k++){
+        if(wins[i][j][k]){
+          winArray[k]++
+          anotherWin[k] = 6
+          if (winArray[k] == 5){
+            wx.showModal({
+              title: '',
+              content: (me ? '白' : '黑') + '方获胜',
+            })
+            over = true
+            return
+          }
+        }
+      }
+    }
+    
     me = !me
-    this.computerAI() 
+    if(this.getMode()){
+      this.computerAI() 
+    }
   },
 
   computerAI: function(){
