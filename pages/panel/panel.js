@@ -14,14 +14,8 @@ var computerWin = []
 var count = 0
 var over = false
 
-
-// var man_machine = true;
-
 Page({
 
-  /**
-   * 页面的初始数据
-   */
   data: {
     man_machine: true  // 判断是人机、人人
   },
@@ -59,8 +53,6 @@ Page({
             man_machine: !that.data.man_machine
           })
           that.oneMoreGame()
-        }else {
-          // 取消
         }
       }
     })
@@ -81,16 +73,10 @@ Page({
             man_machine: !that.data.man_machine
           })
           that.oneMoreGame()
-        } else {
-          // 取消
         }
       }
     })
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
 
   onLoad: function () {
     var that = this
@@ -157,8 +143,6 @@ Page({
       computerWin[i] = 0
     }
 
-
-
   },
   
   // 画棋盘
@@ -185,7 +169,7 @@ Page({
     }
   },
 
-  // 
+  // 当前模式
   getMode: function(){
     return this.data.man_machine
   },
@@ -249,6 +233,7 @@ Page({
     }
   },
 
+  // 机算法
   computerAI: function(){
     var max = 0
     var u = 0
@@ -346,6 +331,7 @@ Page({
 
   },
 
+  // 画棋子
   drawPiece: function(){
     this.drawChess(false)
     
